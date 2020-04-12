@@ -16,16 +16,18 @@ def create_squared_rows(list_argv):
         matrix_list.append(alist)
     return matrix_list
 
-def check_argv(list_argv):
-    if len(list_argv) < 2:
+def check_argv():
+    if len(sys.argv) < 2 or len(sys.argv) > 21:
         return False
     else:
-        list_row = list_argv[1:] 
+        list_row = sys.argv[1:] 
         len_ref_argv = len(list_row[0])
         num_row = len(list_row)
         if num_row == 1 and len_ref_argv > 1:
             return False
-        if num_row > 2 and num_row != len_ref_argv:
+        elif num_row == 2 and len_ref_argv > 2:
+            return False
+        elif num_row > 2 and num_row != len_ref_argv:
             return False
         else:
             num_argv = 0 
@@ -35,14 +37,6 @@ def check_argv(list_argv):
                 if not argv.isdigit() or len_argv != len_ref_argv:
                     return False
         return True
-
-def get_snail_str(snail_result):
-    argv_row = []
-    while snail_result:
-        argv_row.append(snail_result[:1])
-        snail_result = snail_result[1:]
-    snail_str = ", ".join(argv_row)
-    return(snail_str)
 
 def snail (row_init, row_end, col_init, col_end, squared_rows):
     snail_result =[]
@@ -87,9 +81,8 @@ def resolve():
         print(snail_result)
 
 def main():
-    if not check_argv(sys.argv):
-        print ("usage: %s <1-9 squared_rows...>" % sys.argv[0])
-        sys.exit()
+    if not check_argv():
+        sys.exit("usage: %s <1-9 squared_rows...>" % sys.argv[0])
     resolve()
 
 if __name__ == "__main__":
