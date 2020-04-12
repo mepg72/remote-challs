@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import sys
 
 def get_argv_list(argv):
@@ -17,20 +17,24 @@ def create_squared_rows(list_argv):
     return matrix_list
 
 def check_argv(list_argv):
-    num_argv = 0
-    len_ref_argv = len(list_argv[0])
-    if len_ref_argv == 1:
-        if len(list_argv) != 2:
-            return False
-    elif len(list_argv) != len_ref_argv:
+    if len(list_argv) < 2:
         return False
     else:
-        for argv in list_argv:
-            num_argv += 1 
-            len_argv = len(argv)
-            if not argv.isdigit() or len_argv != len_ref_argv:
-                return False
-    return True
+        list_row = list_argv[1:] 
+        len_ref_argv = len(list_row[0])
+        num_row = len(list_row)
+        if num_row == 1 and len_ref_argv > 1:
+            return False
+        if num_row > 2 and num_row != len_ref_argv:
+            return False
+        else:
+            num_argv = 0 
+            for argv in list_row:
+                num_argv += 1 
+                len_argv = len(argv)
+                if not argv.isdigit() or len_argv != len_ref_argv:
+                    return False
+        return True
 
 def get_snail_str(snail_result):
     argv_row = []
@@ -58,27 +62,35 @@ def snail (row_init, row_end, col_init, col_end, squared_rows):
     snail_str = ", ".join(snail_result)
     return snail_str
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2 or not check_argv(sys.argv[1:]):
-        print ("usage: ./mpena-gu.py <1-9 squared_rows...>")
-        sys.exit()
-    size_array = len(sys.argv[1])
-    if size_array == 1:
+def resolve():
+    if len(sys.argv[1:]) == 1:
+        print("%s" % sys.argv[1])
+    elif len(sys.argv[1:]) == 2 and len(sys.argv[1]) == 1:
         print("%s, %s" % (sys.argv[1],sys.argv[2]))
+    else:
+        size_array = len(sys.argv[1])
+        squared = create_squared_rows(sys.argv[1:])
+        num_squared = size_array//2 
+        if size_array%2 != 0:
+            num_squared += 1
+        i = 0 
+        snail_result = "" 
+        while i< num_squared:
+            if i>0:
+                snail_result += ', '
+            row_init = i
+            row_end  = size_array - i
+            col_init = i
+            col_end  = size_array - i
+            snail_result += snail(row_init,row_end,col_init,col_end, squared)
+            i += 1
+        print(snail_result)
+
+def main():
+    if not check_argv(sys.argv):
+        print ("usage: %s <1-9 squared_rows...>" % sys.argv[0])
         sys.exit()
-    squared = create_squared_rows(sys.argv[1:])
-    num_squared = size_array//2 
-    if size_array%2 != 0:
-        num_squared += 1
-    i = 0 
-    snail_result = "" 
-    while i< num_squared:
-        if i>0:
-            snail_result += ', '
-        row_init = i
-        row_end  = size_array - i
-        col_init = i
-        col_end  = size_array - i
-        snail_result += snail(row_init,row_end,col_init,col_end, squared)
-        i += 1
-    print(snail_result)
+    resolve()
+
+if __name__ == "__main__":
+    main()
